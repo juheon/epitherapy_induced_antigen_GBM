@@ -12,7 +12,7 @@ All scripts defined below can be found in the `bin` folder.
 
 # **Scripts and Descriptions**
 
-## TITEA_Aanalysis.Rmd
+## TITEA_Analysis.Rmd
 
 R Notebook with analysis of mRNA, nanoCAGE, long read sequencing, and mass spectrometry data
 
