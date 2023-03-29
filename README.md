@@ -8,6 +8,8 @@ Of note, the transcript analysis pipeline used in this paper can be found here: 
 
 Furthermore, the script used to perform cap filtering for nanocage data can be found here: https://github.com/nakul2234/cageCapfilter
 
+The script for peak calling using nanoCAGE data and transcript profiling using long-read data can be found here: https://github.com/twlab/LRCAGE
+
 All scripts defined below can be found in the `bin` folder.
 
 # **Scripts and Descriptions**
@@ -62,3 +64,25 @@ optional arguments:
                 be considered
   -l <LENGTH>   Minimum peptide length. Default: 1
 ```
+
+## call_ATACpeak.sh
+```
+usage: call_ATACpeak.sh <ATAC BAM> <BLACKLIST BED>
+Call ATAC peaks from ATAC bam file. To infer Tn5 insertion site for each read, +5 and -4 offset is applied to reads aligned to the forward and reverse strand, respectively.
+
+<positional arguments>:
+  <ATAC BAM>       The bam file of ATAC-seq data.
+  <BLACKLIST BED>  The blacklist bed file that will filter out overlapping ATAC peaks.
+```
+
+## calc_ATACscalefactor.R
+```
+usage: calc_ATACscalefactor <ATAC SAMPLE SHEET CSV> <ATAC PEAK AT HOUSE KEEPING GENES BED> <SIZE FACTOR TXT>
+Calculate scale factors for each ATAC data using consensus ATAK peaks at house keeping gene promoters. 
+
+<positional arguments>:
+  <ATAC SAMPLE SHEET CSV>                 Sample sheet CSV file of ATAC samples. This format is used for DiffBind package.
+  <ATAC PEAK AT HOUSE KEEPING GENES BED>  The BED file of consensus ATAC peaks overlapping house keeping gene promoters.
+  <SIZE FACTOR TXT>                       Scale factors calculated for each ATAC sample
+```
+
