@@ -6962,3 +6962,260 @@ colnames(SuppData7) <- c("Peptide Sequence", "Sample", "Protein", "Subfamily", "
 SuppData7 <- SuppData7[order(SuppData7$`Peptide Sequence`),]
 write.csv(SuppData7, "TABLE S7- Detected endogenous transposable element transcript antigens.csv", row.names = FALSE)
 ```
+
+
+
+```{r}
+##Script used to draw heatmaps showing expressions in GTEx tissues.
+
+library(RColorBrewer);library(circlize)
+library("ComplexHeatmap", lib.loc="/bar/jmaeng/R/x86_64-pc-linux-gnu-library/3.6_custominstall/")
+library(dplyr)
+
+library(tidyr)
+library(ggplot2)
+
+setwd("/scratch/jmaeng/GSC_grad/analayis/GTEx_filtering")
+idir="/scratch/nakul/TE_Antigen_glioblastoma_project/nanoCAGE_analysisFinal/gtexrebuttalanalysis/"
+
+fMin=0; fMax=1; nTotalStep=50
+vecCol.percent=colorRampPalette( c("#FFFFFF", "#000099" ) )(nTotalStep)
+vecStep.percent=seq(fMin, fMax, length.out=nTotalStep)
+calc_ht_size = function(ht, unit = "mm") {
+  #https://jokergoo.github.io/2020/05/11/set-cell-width/height-in-the-heatmap/
+  pdf(NULL)
+  ht = draw(ht)
+  w = ComplexHeatmap:::width(ht)
+  w = convertX(w, unit, valueOnly = TRUE)
+  h = ComplexHeatmap:::height(ht)
+  h = convertY(h, unit, valueOnly = TRUE)
+  dev.off()
+  
+  c(w, h)
+}
+
+#1. Load TEprof2 
+df.antigenic=read.csv("/scratch/nakul/TE_Antigen_glioblastoma_project/nanoCAGE_analysisFinal/revisionPlots/ActivatedandAntigenic.csv", header = T,stringsAsFactors = F)
+vecTX.antigenic=df.antigenic$transcriptname
+
+#2. Draw heatmap for TEprof2 data
+df.mat.teprof2=read.table("matrix.teprof2.txt", stringsAsFactors = F, sep="\t", header = T, check.names = F)
+mat.teprof2=as.matrix( df.mat.teprof2[df.mat.teprof2$transcriptname %in% vecTX.antigenic & 
+                                        df.mat.teprof2$sequence.cand!="NAs", c( "Brain", "Testis", 
+                                                                              "Breast", "Cervix Uteri", "Fallopian Tube", "Ovary", "Uterus", "Vagina", "Prostate",
+                                                                              "Adipose Tissue",  "Adrenal Gland", "Bladder", "Blood", "Blood Vessel", 
+                                                                              "Colon", "Esophagus","Heart", "Kidney", "Liver", "Lung", "Muscle", "Nerve", "Pancreas", "Pituitary", "Salivary Gland", "Skin", "Small Intestine", "Spleen", "Stomach", "Thyroid")] )
+rownames(mat.teprof2)=df.mat.teprof2[df.mat.teprof2$transcriptname %in% vecTX.antigenic &
+                                       df.mat.teprof2$sequence.cand!="NAs",]$transcriptname
+
+rowAnnot<-HeatmapAnnotation(
+  `Tissue\ncount`=anno_barplot( df.mat.teprof2[ df.mat.teprof2$transcriptname %in% vecTX.antigenic &
+                                                  df.mat.teprof2$sequence.cand!="NAs",]$num_active_tissue, 
+                                bar_width = 0.5, axis_param = list(direction = "reverse"), ylim=c(0, 30)
+  ),
+  which="row");
+rowAnnot.txname<-HeatmapAnnotation(
+  txname = anno_mark(at = c(1:9), 
+                     labels = rownames(mat.teprof2) ),
+  which="row");
+
+
+
+nCellWidth=8 #mm
+nCellHeight=8 #mm #nCellHeight=4 #mm
+
+df.mat.teprof2[df.mat.teprof2$sequence.cand!="NAs",1:2]
+
+hm<-ComplexHeatmap::Heatmap(mat.teprof2, name="percent",
+                            width = ncol(mat.teprof2)*unit(nCellWidth, "mm"), height = nrow(mat.teprof2)*unit(nCellHeight, "mm"),
+                            cluster_columns=F, cluster_rows=F,
+                            show_row_names=F, row_names_side="left",
+                            left_annotation = rowAnnot,right_annotation = rowAnnot.txname,
+                            rect_gp = gpar(col = "white", lwd = 2),
+                            
+                            col = colorRamp2( breaks=vecStep.percent, colors=vecCol.percent),
+                            
+                            column_split = factor( c(rep( "imm.\nprev.", 2), rep("sex-specific", 7), rep("others", 21) ), 
+                                                   levels=c("imm.\nprev.", "sex-specific", "others")),
+                            column_title_gp = gpar(fill = c("white", "white", "white")),
+                            
+                            row_split=factor( c(rep("SETKNPPIP", 3), "RYHRLYFLF", "LISNSWGQAI", "IYHRQQNRF", "GLFCGDVHTV"), 
+                                              levels=c("SETKNPPIP", "RYHRLYFLF", "LISNSWGQAI", "IYHRQQNRF", "GLFCGDVHTV")),
+                            row_title_rot = 0)
+hm.dimension=calc_ht_size(hm)
+pdf("jmaeng_heatmap_gtex_exp.teprofantigen.v3.pdf",
+    width = grid::convertUnit( unit(hm.dimension[1], "mm"), "inches", valueOnly=T ),
+    height = grid::convertUnit( unit(hm.dimension[2], "mm"), "inches", valueOnly=T ))
+ComplexHeatmap::draw( hm )
+dev.off()
+
+
+
+##NA_antigen
+mat.teprof2.NA_antigen=as.matrix( df.mat.teprof2[df.mat.teprof2$transcriptname %in% vecTX.antigenic & 
+                                                   df.mat.teprof2$sequence.cand=="NAs", c( "Brain", "Testis", 
+                                                                                         "Breast", "Cervix Uteri", "Fallopian Tube", "Ovary", "Uterus", "Vagina", "Prostate",
+                                                                                         "Adipose Tissue",  "Adrenal Gland", "Bladder", "Blood", "Blood Vessel", 
+                                                                                         "Colon", "Esophagus","Heart", "Kidney", "Liver", "Lung", "Muscle", "Nerve", "Pancreas", "Pituitary", "Salivary Gland", "Skin", "Small Intestine", "Spleen", "Stomach", "Thyroid")] )
+rownames(mat.teprof2.NA_antigen)=df.mat.teprof2[df.mat.teprof2$transcriptname %in% vecTX.antigenic & 
+                                                  df.mat.teprof2$sequence.cand=="NAs",]$transcriptname
+
+rowAnnot.NA_antigen<-HeatmapAnnotation(
+  `Tissue\ncount`=anno_barplot( df.mat.teprof2[df.mat.teprof2$transcriptname %in% vecTX.antigenic & 
+                                                 df.mat.teprof2$sequence.cand=="NAs",]$num_active_tissue, 
+                                bar_width = 0.5, axis_param = list(direction = "reverse"), ylim=c(0, 30)
+  ),
+  which="row");
+rowAnnot.NA_antigen.txname<-HeatmapAnnotation(
+  txname = anno_mark(at = c(1:10), 
+                     labels = rownames(mat.teprof2.NA_antigen[c(1:10),]) ),
+  which="row");
+
+
+nCellHeight.NA_antigen=3 #mm #nCellHeight=4 #mm
+hm.NA_antigen<-ComplexHeatmap::Heatmap(mat.teprof2.NA_antigen, name="percent",
+                                       width = ncol(mat.teprof2.NA_antigen)*unit(nCellWidth, "mm"), height = nrow(mat.teprof2.NA_antigen)*unit(nCellHeight.NA_antigen, "mm"),
+                                       cluster_columns=F, cluster_rows=F,
+                                       show_row_names=F, row_names_side="left",
+                                       left_annotation = rowAnnot.NA_antigen,right_annotation = rowAnnot.NA_antigen.txname,
+                                       rect_gp = gpar(col = "white", lwd = 2),
+                                       
+                                       col = colorRamp2( breaks=vecStep.percent, colors=vecCol.percent),
+                                       
+                                       column_split = factor( c(rep( "imm.\nprev.", 2), rep("sex-specific", 7), rep("others", 21) ), 
+                                                              levels=c("imm.\nprev.", "sex-specific", "others")),
+                                       column_title_gp = gpar(fill = c("white", "white", "white")),
+                                       
+                                       #row_split=factor( c(rep("SETKNPPIP", 5), "RYHRLYFLF", "LISNSWGQAI", "IYHRQQNRF", "GLFCGDVHTV"), 
+                                       #                  levels=c("SETKNPPIP", "RYHRLYFLF", "LISNSWGQAI", "IYHRQQNRF", "GLFCGDVHTV")),
+                                       row_title_rot = 0)
+hm.dimension.NA_antigen=calc_ht_size(hm.NA_antigen)
+pdf("jmaeng_heatmap_gtex_exp.teprofantigen.NA_antigens.v3.pdf",
+    width = grid::convertUnit( unit(hm.dimension.NA_antigen[1], "mm"), "inches", valueOnly=T ),
+    height = grid::convertUnit( unit(hm.dimension.NA_antigen[2], "mm"), "inches", valueOnly=T ))
+ComplexHeatmap::draw( hm.NA_antigen )
+dev.off()
+
+##Stats for response figure
+df.exp_quies=read.csv("/scratch/nakul/TE_Antigen_glioblastoma_project/nanoCAGE_analysisFinal/revisionPlots/ActivatedandAntigenic_QExpression.csv", stringsAsFactors = F, header=T)
+dfg.exp_quies<-df.exp_quies[, c("transcriptname", "QNHA_DMSO" ,  "QNHA_DP",  "QhFB_DMSO","QhFB_DP")] %>% tidyr::gather( "type", "TPM", QNHA_DMSO:QhFB_DP)
+dfg.exp_quies$cell<-apply(dfg.exp_quies, 1, function(a_x){stringr::str_split(a_x[2], "_")[[1]][1];})
+dfg.exp_quies$treatment<-apply(dfg.exp_quies, 1, function(a_x){stringr::str_split(a_x[2], "_")[[1]][2];})
+dfg.exp_quies$islabel=ifelse(dfg.exp_quies$TPM>1, "O", "X")
+dfg.exp_quies$cell=factor(dfg.exp_quies$cell, levels=c("QNHA", "QhFB"))
+pdf("jmaeng_dotplot_exp_inquiescent.pdf", width = 4.5, height=2.5)
+ggplot(data=dfg.exp_quies, aes(x=treatment,  y=log2(1+TPM), color=treatment))+
+  geom_violin(color="black")+
+  geom_line(aes(group = transcriptname), color="black", alpha=0.1) + 
+  geom_point(size=1)+
+  scale_color_manual(values=c("DMSO"="#C191BB", "DP"="#7E9FCC"))+
+  geom_hline( yintercept = log2(1+1), linetype="dashed", color="red")+
+  theme_classic()+
+  facet_grid(.~cell)
+dev.off()
+length( unique( dfg.exp_quies[dfg.exp_quies$TPM>1, ]$transcriptname ) )
+
+#LRCAGE heatmap
+
+df.mat.LRCAGE=read.table("matrix.LRCAGE.txt", stringsAsFactors = F, sep="\t", header = T, check.names = F)
+mat.LRCAGE=as.matrix( df.mat.LRCAGE[, c( "Brain", "Testis", 
+                                         "Breast", "Cervix Uteri", "Fallopian Tube", "Ovary", "Uterus", "Vagina", "Prostate",
+                                         "Adipose Tissue",  "Adrenal Gland", "Bladder", "Blood", "Blood Vessel", 
+                                         "Colon", "Esophagus","Heart", "Kidney", "Liver", "Lung", "Muscle", "Nerve", "Pancreas", "Pituitary", "Salivary Gland", "Skin", "Small Intestine", "Spleen", "Stomach", "Thyroid")] )
+rownames(mat.LRCAGE)=df.mat.LRCAGE$transcriptname
+
+
+rowAnnot.LRCAGE<-HeatmapAnnotation(
+  `Tissue\ncount`=anno_barplot( df.mat.LRCAGE$num_active_tissue, 
+                                bar_width = 0.5, axis_param = list(direction = "reverse"), ylim=c(0, 30)),
+  which="row");
+
+nCellHeight.LRCAGE=4 #mm #nCellHeight=4 #mm
+
+
+hm.LRCAGE<-ComplexHeatmap::Heatmap(mat.LRCAGE, name="percent",
+                                   width = ncol(mat.LRCAGE)*unit(nCellWidth, "mm"), height = nrow(mat.LRCAGE)*unit(nCellHeight.LRCAGE, "mm"),
+                                   cluster_columns=F, cluster_rows=F,
+                                   show_row_names=T, row_names_side="right",
+                                   left_annotation = rowAnnot.LRCAGE,
+                                   rect_gp = gpar(col = "white", lwd = 2),
+                                   
+                                   col = colorRamp2( breaks=vecStep.percent, colors=vecCol.percent),
+                                   
+                                   column_split = factor( c(rep( "imm.\nprev.", 2), rep("sex-specific", 7), rep("others", 21) ), 
+                                                          levels=c("imm.\nprev.", "sex-specific", "others")),
+                                   column_title_gp = gpar(fill = c("white", "white", "white")),
+                                   
+                                   row_split=factor( c(rep("IYHRQQNRF", 2), rep("GLFCGDVHTV", 2), "VSVDLNIII", 
+                                                       rep("RYHRLYFLF", 9), "LIVNRKTVE", "ALYPSYLIW", "GLFFMKQSV", "LTGLTAISYI",
+                                                       "RQPTKWEKI", rep("APTPITGPSL", 2), "KGIEKLVD", "KLSLFYHEL", "LFTASFPSVL",
+                                                       "SVPAVTLAA"
+                                   ), 
+                                   levels=c("IYHRQQNRF", "GLFCGDVHTV", "VSVDLNIII", "RYHRLYFLF", 
+                                            "LIVNRKTVE", "ALYPSYLIW", "GLFFMKQSV", "LTGLTAISYI", "RQPTKWEKI",
+                                            "APTPITGPSL", "KGIEKLVD", "KLSLFYHEL", "LFTASFPSVL",
+                                            "SVPAVTLAA"))
+                                   ,
+                                   row_title_rot = 0)
+hm.LRCAGE.dimension=calc_ht_size(hm.LRCAGE)
+pdf("jmaeng_heatmap_gtex_exp.LRCAGEantigen.v2.pdf",
+    width = grid::convertUnit( unit(hm.LRCAGE.dimension[1], "mm"), "inches", valueOnly=T ),
+    height = grid::convertUnit( unit(hm.LRCAGE.dimension[2], "mm"), "inches", valueOnly=T ))
+ComplexHeatmap::draw( hm.LRCAGE )
+dev.off()
+
+
+
+#Manual sorting of long read matrixes for heatmap
+df.mat.LRCAGE=read.table("matrix.LRCAGE.txt", stringsAsFactors = F, sep="\t", header = T, check.names = F)
+df.mat.LRCAGE.reordered=df.mat.LRCAGE[c(24, 17, 3, 4, 18, 
+                                        22, 6:14, 20:21, 
+                                        2, 1, 5, 15:16,
+                                        19, 23, 25),]
+mat.LRCAGE.reordered=as.matrix( df.mat.LRCAGE.reordered[, c( "Brain", "Testis", 
+                                         "Breast", "Cervix Uteri", "Fallopian Tube", "Ovary", "Uterus", "Vagina", "Prostate",
+                                         "Adipose Tissue",  "Adrenal Gland", "Bladder", "Blood", "Blood Vessel", 
+                                         "Colon", "Esophagus","Heart", "Kidney", "Liver", "Lung", "Muscle", "Nerve", "Pancreas", "Pituitary", "Salivary Gland", "Skin", "Small Intestine", "Spleen", "Stomach", "Thyroid")] )
+rownames(mat.LRCAGE.reordered)=df.mat.LRCAGE.reordered$transcriptname
+
+
+rowAnnot.LRCAGE.reordered<-HeatmapAnnotation(
+  `Tissue\ncount`=anno_barplot( df.mat.LRCAGE.reordered$num_active_tissue, 
+                                bar_width = 0.5, axis_param = list(direction = "reverse"), ylim=c(0, 30)),
+  which="row");
+
+nCellHeight.LRCAGE=4 #mm #nCellHeight=4 #mm
+
+
+hm.LRCAGE.reordered<-ComplexHeatmap::Heatmap(mat.LRCAGE.reordered, name="percent",
+                                   width = ncol(mat.LRCAGE)*unit(nCellWidth, "mm"), height = nrow(mat.LRCAGE)*unit(nCellHeight.LRCAGE, "mm"),
+                                   cluster_columns=F, cluster_rows=F,
+                                   show_row_names=T, row_names_side="right",
+                                   left_annotation = rowAnnot.LRCAGE.reordered,
+                                   rect_gp = gpar(col = "white", lwd = 2),
+                                   
+                                   col = colorRamp2( breaks=vecStep.percent, colors=vecCol.percent),
+                                   
+                                   column_split = factor( c(rep( "imm.\nprev.", 2), rep("sex-specific", 7), rep("others", 21) ), 
+                                                          levels=c("imm.\nprev.", "sex-specific", "others")),
+                                   column_title_gp = gpar(fill = c("white", "white", "white")),
+                                   row_split=factor( c("LFTASFPSVL", "GLFFMKQSV", rep("GLFCGDVHTV", 2), "LTGLTAISYI", 
+                                                       "KGIEKLVD", rep("RYHRLYFLF", 9), rep("APTPITGPSL", 2), "IYHRQQNRF_Q", "IYHRQQNRF", 
+                                                       "VSVDLNIII", 
+                                                       "LIVNRKTVE", "ALYPSYLIW", 
+                                                       "RQPTKWEKI",   "KLSLFYHEL", 
+                                                       "SVPAVTLAA"
+                                   ), 
+                                   levels=c("LFTASFPSVL", "GLFFMKQSV", "GLFCGDVHTV", "LTGLTAISYI", "KGIEKLVD",
+                                            "RYHRLYFLF", "APTPITGPSL", "IYHRQQNRF_Q", "IYHRQQNRF", "VSVDLNIII", 
+                                            "LIVNRKTVE", "ALYPSYLIW",   "RQPTKWEKI",
+                                            "KLSLFYHEL", 
+                                            "SVPAVTLAA")),
+                                   row_title_rot = 0)
+hm.LRCAGE.reordered.dimension=calc_ht_size(hm.LRCAGE.reordered)
+pdf("jmaeng_heatmap_gtex_exp.LRCAGEantigen.reordered.v2.pdf",
+    width = grid::convertUnit( unit(hm.LRCAGE.reordered.dimension[1], "mm"), "inches", valueOnly=T ),
+    height = grid::convertUnit( unit(hm.LRCAGE.reordered.dimension[2], "mm"), "inches", valueOnly=T ))
+ComplexHeatmap::draw( hm.LRCAGE.reordered )
+dev.off()
+```
