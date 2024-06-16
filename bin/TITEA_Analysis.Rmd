@@ -4,7 +4,7 @@ title: "Glioblastoma nanoCAGE, mRNA, longRead, and Mass Spec Analysis"
 output: html_notebook
 ---
 
-#Load in the RNA-seq data for processing and trnaslating before confirming with the CAGE data and prioritizing candidates
+#Load in the RNA-seq data for processing and translating before confirming with the sCAGE data and prioritizing candidates
 
 ```{r}
 load("/scratch/nakul/TE_Antigen_glioblastoma_project/mRNA_analysisFinal/assembled/Step11_FINAL.RData")
@@ -1992,7 +1992,7 @@ transcriptPeakTable$B66_activated <- transcriptPeakTable$clusterPeak %in% b66.ca
 
 transcriptPeakTable$B66_notquescent <- (transcriptPeakTable$clusterPeak %in% b66.cagadata.cand$consensus.cluster[b66.cagadata.cand$activated]) & !(transcriptPeakTable$clusterPeak %in% b66.cagadata.cand$consensus.cluster[b66.cagadata.cand$inquiescent])
 
-transcriptPeakTable$B66_antigenic <- transcriptPeakTable$B66_notquescent & (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
+transcriptPeakTable$B66_antigenic <- (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
 
 transcriptPeakTable$B49_present <- transcriptPeakTable$clusterPeak %in% b49.cagadata.cand$consensus.cluster[b49.cagadata.cand$presentin]
  
@@ -2000,7 +2000,7 @@ transcriptPeakTable$B49_activated <- transcriptPeakTable$clusterPeak %in% b49.ca
 
 transcriptPeakTable$B49_notquescent <- (transcriptPeakTable$clusterPeak %in% b49.cagadata.cand$consensus.cluster[b49.cagadata.cand$activated]) & !(transcriptPeakTable$clusterPeak %in% b49.cagadata.cand$consensus.cluster[b49.cagadata.cand$inquiescent])
 
-transcriptPeakTable$B49_antigenic <- transcriptPeakTable$B49_notquescent & (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
+transcriptPeakTable$B49_antigenic <- (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
 
 transcriptPeakTable$B36_present <- transcriptPeakTable$clusterPeak %in% b36.cagadata.cand$consensus.cluster[b36.cagadata.cand$presentin]
  
@@ -2008,7 +2008,7 @@ transcriptPeakTable$B36_activated <- transcriptPeakTable$clusterPeak %in% b36.ca
 
 transcriptPeakTable$B36_notquescent <- (transcriptPeakTable$clusterPeak %in% b36.cagadata.cand$consensus.cluster[b36.cagadata.cand$activated]) & !(transcriptPeakTable$clusterPeak %in% b36.cagadata.cand$consensus.cluster[b36.cagadata.cand$inquiescent])
 
-transcriptPeakTable$B36_antigenic <- transcriptPeakTable$B36_notquescent & (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
+transcriptPeakTable$B36_antigenic <- (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
 
 transcriptPeakTable$NHA_present <- transcriptPeakTable$clusterPeak %in% nha.cagadata.cand$consensus.cluster[nha.cagadata.cand$presentin]
  
@@ -2016,7 +2016,7 @@ transcriptPeakTable$NHA_activated <- transcriptPeakTable$clusterPeak %in% nha.ca
 
 transcriptPeakTable$NHA_notquescent <- (transcriptPeakTable$clusterPeak %in% nha.cagadata.cand$consensus.cluster[nha.cagadata.cand$activated]) & !(transcriptPeakTable$clusterPeak %in% nha.cagadata.cand$consensus.cluster[nha.cagadata.cand$inquiescent])
 
-transcriptPeakTable$NHA_antigenic <- transcriptPeakTable$NHA_notquescent & (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
+transcriptPeakTable$NHA_antigenic <- (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
 
 transcriptPeakTable$hFB_present <- transcriptPeakTable$clusterPeak %in% hfb.cagadata.cand$consensus.cluster[hfb.cagadata.cand$presentin]
  
@@ -2024,7 +2024,7 @@ transcriptPeakTable$hFB_activated <- transcriptPeakTable$clusterPeak %in% hfb.ca
 
 transcriptPeakTable$hFB_notquescent <- (transcriptPeakTable$clusterPeak %in% hfb.cagadata.cand$consensus.cluster[hfb.cagadata.cand$activated]) & !(transcriptPeakTable$clusterPeak %in% hfb.cagadata.cand$consensus.cluster[hfb.cagadata.cand$inquiescent])
 
-transcriptPeakTable$hFB_antigenic <- transcriptPeakTable$hFB_notquescent & (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
+transcriptPeakTable$hFB_antigenic <- (transcriptPeakTable$transcriptname %in% annotatedcufftranscripts.fil.c$transcriptname[annotatedcufftranscripts.fil.c$antigenic == TRUE])
 ```
 
 ```{r}
@@ -2312,6 +2312,7 @@ annotatedcufftranscripts.fil.c.antigenic$numCL <- transcriptPeakTable.antigenic$
 
 ```{r}
 
+#annotatedcufftranscripts.fil.c.antigenic.cand is looking at if something can be antigenic in anything. 
 annotatedcufftranscripts.fil.c.antigenic.cand <- annotatedcufftranscripts.fil.c.antigenic[annotatedcufftranscripts.fil.c.antigenic$numCL > 0,]
 
 MHCtype <- function(peakName, proteinsequence, framelabel, frametype, nmdcall, HLAgenes){
@@ -2541,6 +2542,37 @@ ggsave2("./plots/F2_AntigenPredictedStats_OtherCL.pdf", pg1, width = 12, height 
 
 ```
 
+Venn diagram creation 2024
+
+```{r}
+transcriptPeakTable.antigenic.cand.2 <- transcriptPeakTable[(transcriptPeakTable$B66_activated & transcriptPeakTable$B66_antigenic) | (transcriptPeakTable$B49_activated & transcriptPeakTable$B49_antigenic) | (transcriptPeakTable$B36_activated & transcriptPeakTable$B36_antigenic), ]
+
+transcriptPeakTable.antigenic.cand.2$B36_activated.antigenic <- transcriptPeakTable.antigenic.cand.2$B36_activated & transcriptPeakTable.antigenic.cand.2$B36_antigenic
+
+transcriptPeakTable.antigenic.cand.2$B49_activated.antigenic <- transcriptPeakTable.antigenic.cand.2$B49_activated & transcriptPeakTable.antigenic.cand.2$B49_antigenic
+
+transcriptPeakTable.antigenic.cand.2$B66_activated.antigenic <- transcriptPeakTable.antigenic.cand.2$B66_activated & transcriptPeakTable.antigenic.cand.2$B66_antigenic
+
+ExportTableJuheon.Venn.GTExHeat <- transcriptPeakTable.antigenic.cand.2[,c("transcriptname", "clusterPeak", "uniqid", "B36_activated.antigenic", "B49_activated.antigenic", "B66_activated.antigenic")]
+
+write.table(ExportTableJuheon.Venn.GTExHeat, "./revisionPlots/ActivatedandAntigenic.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+```{r}
+transcriptPeakTable.antigenic.cand.2$QNHA_DMSO <- qnha.cagadata.cand$QNHA_DMSO[match(transcriptPeakTable.antigenic.cand.2$clusterPeak, qnha.cagadata.cand$consensus.cluster)]
+transcriptPeakTable.antigenic.cand.2$QNHA_DP <- qnha.cagadata.cand$QNHA_DP[match(transcriptPeakTable.antigenic.cand.2$clusterPeak, qnha.cagadata.cand$consensus.cluster)]
+
+transcriptPeakTable.antigenic.cand.2$QhFB_DMSO <- qhfb.cagadata.cand$QhFB_DMSO[match(transcriptPeakTable.antigenic.cand.2$clusterPeak, qhfb.cagadata.cand$consensus.cluster)]
+transcriptPeakTable.antigenic.cand.2$QhFB_DP <- qhfb.cagadata.cand$QhFB_DP[match(transcriptPeakTable.antigenic.cand.2$clusterPeak, qhfb.cagadata.cand$consensus.cluster)]
+
+ <- transcriptPeakTable.antigenic.cand.2[,c("transcriptname", "clusterPeak", "uniqid", "QNHA_DMSO", "QNHA_DP", "QhFB_DMSO", "QhFB_DP")]
+
+write.table(ExportTableJuheon.QExpression, "./revisionPlots/ActivatedandAntigenic_QExpression.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+
+ExportTableJuheon.QExpression.expressed <- 
+```
+
+
 
 ```{r}
 currentCellLines <- c("B36", "B49", "B66", "hFB", "NHA")
@@ -2549,7 +2581,7 @@ i = 1
 
 for (currentCellLine in currentCellLines){
   
-  annotatedcufftranscripts.cand.cl <- annotatedcufftranscripts.fil.c[annotatedcufftranscripts.fil.c$transcriptname %in% transcriptPeakTable$transcriptname[transcriptPeakTable[[paste0(currentCellLine,'_antigenic')]]],]
+  annotatedcufftranscripts.cand.cl <- annotatedcufftranscripts.fil.c[annotatedcufftranscripts.fil.c$transcriptname %in% transcriptPeakTable$transcriptname[transcriptPeakTable[[paste0(currentCellLine,'_antigenic')]] & transcriptPeakTable[[paste0(currentCellLine,'_activated')]]],]
   
   HLA.melt.cl <- HLA.melt[HLA.melt$file_label == currentCellLine,]
   
@@ -2628,7 +2660,7 @@ currentCellLines <- c("B36", "B49", "B66", "hFB", "NHA")
 i = 1
 
 for (currentCellLine in currentCellLines){
-  ggsave(paste0("./plots/",currentCellLine,"_heatmap.pdf"), heatmapplotLists[[i]], height = 3, width = 18, device = cairo_pdf())
+  ggsave(paste0("./revisionPlots/",currentCellLine,"_heatmap.pdf"), heatmapplotLists[[i]], height = 3, width = 18, device = cairo_pdf())
   i = i + 1
 }
 ```
@@ -2637,15 +2669,15 @@ for (currentCellLine in currentCellLines){
 ```{r}
 library(UpSetR)
 
-CL.List <- list(B36 = transcriptPeakTable$transcriptname[transcriptPeakTable$B36_antigenic],
-                B49 = transcriptPeakTable$transcriptname[transcriptPeakTable$B49_antigenic],
-                B66 = transcriptPeakTable$transcriptname[transcriptPeakTable$B66_antigenic],
-                hFB = transcriptPeakTable$transcriptname[transcriptPeakTable$hFB_antigenic],
-                NHA = transcriptPeakTable$transcriptname[transcriptPeakTable$NHA_antigenic])
+CL.List <- list(B36 = transcriptPeakTable$transcriptname[transcriptPeakTable$B36_antigenic & transcriptPeakTable$B36_activated],
+                B49 = transcriptPeakTable$transcriptname[transcriptPeakTable$B49_antigenic & transcriptPeakTable$B49_activated],
+                B66 = transcriptPeakTable$transcriptname[transcriptPeakTable$B66_antigenic & transcriptPeakTable$B66_activated],
+                hFB = transcriptPeakTable$transcriptname[transcriptPeakTable$hFB_antigenic & transcriptPeakTable$hFB_activated],
+                NHA = transcriptPeakTable$transcriptname[transcriptPeakTable$NHA_antigenic & transcriptPeakTable$NHA_activated])
 
 upsetAntigenic <- upset(fromList(CL.List), order.by = "freq", mainbar.y.label = "Antigen Intersections", sets.x.label = "Antigenic Candidates\nper Cell Line",  mb.ratio = c(0.55, 0.45))
 
-CairoPDF(file="./plots/AntigenicUpset.pdf", width = 12, height = 3)
+CairoPDF(file="./revisionPlots/AntigenicUpset.pdf", width = 12, height = 3)
 upsetAntigenic 
 dev.off()
 
@@ -3661,6 +3693,9 @@ getExonCoordViz <- function(structurestring, structureref){
 }
 
 getTEOverlap <- function(structurestring, startTE, endTE){
+  startTE <- as.numeric(startTE)
+  endTE <- as.numeric(endTE)
+  
   totalOverlap <- 0
   chrexample <- strsplit(structurestring, ",")[[1]][2]
   strandexample <- strsplit(structurestring, ",")[[1]][1]
@@ -5770,8 +5805,6 @@ for (cname in colNamesExpression){
   b49unique.te.cpm.expression[cname] <- expressionCPMLoci[indexMatch, c(cname)]
 }
 
-#Of note, there are 69 locations in B49(out of 163 total)  where there is not a CPM value corresponding.  
-
 b49unique.te.cpm.expression.m <- melt(b49unique.te.cpm.expression[,c("sequence","origTE", "TEid", colNamesExpression)], id.vars = c("sequence","origTE", "TEid"))
 
 b49unique.te.cpm.expression.m[is.na(b49unique.te.cpm.expression.m)] <- 0.0
@@ -5835,8 +5868,6 @@ indexMatch <- match(b66unique.te.cpm.expression$TEid, as.character(expressionCPM
 for (cname in colNamesExpression){
   b66unique.te.cpm.expression[cname] <- expressionCPMLoci[indexMatch, c(cname)]
 }
-
-#Of note, there are 69 locations in B66(out of 163 total)  where there is not a CPM value corresponding.  
 
 b66unique.te.cpm.expression.m <- melt(b66unique.te.cpm.expression[,c("sequence","origTE", "TEid", colNamesExpression)], id.vars = c("sequence","origTE", "TEid"))
 
@@ -6963,6 +6994,1208 @@ SuppData7 <- SuppData7[order(SuppData7$`Peptide Sequence`),]
 write.csv(SuppData7, "TABLE S7- Detected endogenous transposable element transcript antigens.csv", row.names = FALSE)
 ```
 
+#Analyzing expression across GTEx
+
+Need to extract a unique intron junction from each transcript to use in veriying expression across samples. 
+
+```{r}
+getIntronJun <- function(structurestring, exonstart, exonend){
+  elementsvec <- as.numeric(tail(strsplit(structurestring, ",")[[1]],-2))
+  elementsvec <- sort(elementsvec)
+  strand <- strsplit(structurestring, ",")[[1]][1]
+   
+  if (length(elementsvec) == 4){
+    intron1start = elementsvec[2] + 1
+    intron1end = elementsvec[3] - 1
+    return(c(intron1start,intron1end))
+    break
+  }
+  
+  if (is.na(exonstart)){
+    i = 4 #We want the first junction if it is not splicing into anything
+    if (strand == "+"){
+      intron1start = elementsvec[i-2] + 1
+      intron1end = elementsvec[i-1] - 1
+      return(c(intron1start,intron1end))
+      break
+    } else{
+      elementsvec <- sort(elementsvec, decreasing = TRUE)
+      intron1start = elementsvec[i-1] + 1
+      intron1end = elementsvec[i-2] - 1
+      return(c(intron1start,intron1end))
+      break
+    }
+  }
+  
+  if (strand == "+"){
+    for (i in seq(4,length(elementsvec), by = 2)){
+      if (elementsvec[i] >= exonstart){
+        intron1start = elementsvec[i-2] + 1
+        intron1end = elementsvec[i-1] - 1
+        return(c(intron1start,intron1end))
+        break
+      }
+    }
+    
+  } else {
+    elementsvec <- sort(elementsvec, decreasing = TRUE)
+    for (i in seq(4,length(elementsvec), by = 2)){
+      if (elementsvec[i] <= exonend){
+        intron1start = elementsvec[i-1] + 1
+        intron1end = elementsvec[i-2] - 1
+        return(c(intron1start,intron1end))
+        break
+      }
+    }
+  }
+}
+
+results <- apply(annotatedcufftranscripts.longread.e.B49[,c("transcoord","start2", "end2")],1,function(x) getIntronJun(x[1],as.numeric(x[2]),as.numeric(x[3])))
+results <- as.data.frame(t(results))
+colnames(results) <- c("intronjunstart","intronjunend")
+annotatedcufftranscripts.longread.e.B49 <- cbind(annotatedcufftranscripts.longread.e.B49, results)
+
+grepintrons <- paste0(annotatedcufftranscripts.longread.e.B49$chrTE, "\t", annotatedcufftranscripts.longread.e.B49$strand,"\t",annotatedcufftranscripts.longread.e.B49$intronjunstart,"\t",annotatedcufftranscripts.longread.e.B49$intronjunend)
+grepintrons <- paste(grepintrons, collapse = '\n')
+
+write(grepintrons, file = "candidate_introns_longreadB49.txt")
+
+write(annotatedcufftranscripts.longread.e.B49$transcriptname, file = "candidate_names_longreadB49.txt")
+```
+
+#Alternative Transcript Analysis
+
+Essentially want to see how many transcripts can encode the given peptide. Essentially turned the gtf into a fasta and then translated the fasta in 3 frames for all transcripts and then loaded in the results. 
+
+After runninng the translation script, can load the data back and see where the antigens from the long-read analysis fit in terms of the transcripts that can encode them.
+
+```{r}
+longReadTranslation <- read.delim('./longreadb49/longread_B49_alltranscripts_allframestranslation.txt', sep = "\t", stringsAsFactors = FALSE, header = FALSE)
+
+colnames(longReadTranslation) <- c("transcriptname", "rnalength", "strand", "frame", "start", "end", "orf.length", "orf.sequence")
+
+```
+
+Then can go ahead and find where the 18 antigens of interest land in terms of being encoded by transcripts across the transcriptome
+
+```{r}
+peptideSequence.LR.18 <- unique(massSpecPeptide.GSCTE_LR.table.b49.filtered$sequence)
+
+peptideSequence.LR.18.df <- data.frame()
+
+for(currentPeptide in peptideSequence.LR.18){
+  longReadTranslation.focus <- longReadTranslation[grepl(currentPeptide, longReadTranslation$orf.sequence),]
+  
+  longReadTranslation.focus$candidate.peptide <- rep(currentPeptide, nrow(longReadTranslation.focus))
+  
+  peptideSequence.LR.18.df <- rbind(peptideSequence.LR.18.df, longReadTranslation.focus)
+}
+
+```
+
+```{r}
+peptideSequence.LR.18.df$uniqid <- annotatedcufftranscripts.longread$uniqid[match(peptideSequence.LR.18.df$transcriptname, annotatedcufftranscripts.longread$transcriptname)]
+peptideSequence.LR.18.df$TEid <- annotatedcufftranscripts.longread$TEid[match(peptideSequence.LR.18.df$transcriptname, annotatedcufftranscripts.longread$transcriptname)]
+```
+
+Now we see that there are many transcripts that can potentially encode the peptide. The canonical transcripts can as well, but again they usually would have the main open reading frame that is probably not being used. 
+
+```{r}
+annotatedcufftranscripts.longread.B49.alltranscripts <-read.delim("./longreadb49/B49_mock_DACPano_gtf.TALON_talon.conf.wpeak.gff3_annotated_test_all", sep = "\t", stringsAsFactors = FALSE, header = FALSE)
+columnlabels <- c("transcriptname", "type1", "gene1", "chr1", "start1", "end1", "exonintron1", "number1" ,"startcodon1" , "transcriptstart1", "transcriptend1", "elements1", "id1", "splicing", "type2", "gene2", "chr2", "start2", "end2", "exonintron2", "number2" ,"startcodon2", "transcriptstart2", "transcriptend2", "elements2", "id2", "chromtrans", "starttrans", "endtrans", "transcoord", "intronanno", "chrTE", "startTE", "endTE", "subfamTE", "numTE", "strandTE", "strand")
+
+colnames(annotatedcufftranscripts.longread.B49.alltranscripts) <- columnlabels
+
+annotatedcufftranscripts.longread.B49.alltranscripts.cand <- annotatedcufftranscripts.longread.B49.alltranscripts[annotatedcufftranscripts.longread.B49.alltranscripts$transcriptname %in% peptideSequence.LR.18.df$transcriptname,]
+
+rm(annotatedcufftranscripts.longread.B49.alltranscripts)
+```
+
+Now can map the transcript information to the TE location
+
+```{r}
+indexMatch <- match(peptideSequence.LR.18.df$transcriptname,annotatedcufftranscripts.longread.B49.alltranscripts.cand$transcriptname)
+
+peptideSequence.LR.18.df$chrtrans <- annotatedcufftranscripts.longread.B49.alltranscripts.cand$chromtrans[indexMatch]
+peptideSequence.LR.18.df$starttrans <- annotatedcufftranscripts.longread.B49.alltranscripts.cand$starttrans[indexMatch]
+peptideSequence.LR.18.df$endtrans <- annotatedcufftranscripts.longread.B49.alltranscripts.cand$endtrans[indexMatch]
+```
+
+```{r}
+
+
+refbedexamples <- apply(annotatedcufftranscripts.longread.B49.alltranscripts.cand[,c("uniqid", "transcoord", "gene2", "transcriptname")], 1, function(x) getRefBed(x[1],x[2], x[3], x[4]))
+refbedexamples <- unlist(refbedexamples)
+refbedexamples.m <- matrix(refbedexamples, nrow=12)
+refbedexamples.m <- as.data.frame(t(refbedexamples.m), stringsAsFactors = FALSE)
+refbedexamples.m$V2 <- as.numeric(refbedexamples.m$V2)
+refbedexamples.m <- refbedexamples.m[order(refbedexamples.m$V1, refbedexamples.m$V2),]
+write.table(refbedexamples.m, "merged_transcripts_all.refBed", quote = FALSE, col.names = FALSE, row.names = FALSE, sep = "\t")
+```
+
+```{r}
+getRefBed.lr <- function(structurestring, gene_name, transcript_name){
+  longvector <- c()
+  chrexample <- strsplit(structurestring, ",")[[1]][2]
+  strandexample <- strsplit(structurestring, ",")[[1]][1]
+  elementsvec <- as.numeric(tail(strsplit(structurestring, ",")[[1]],-2))
+  elementsvec <- sort(elementsvec)
+  startexons <- paste(elementsvec[c(TRUE, FALSE)], collapse=',')
+  endexons <- paste(elementsvec[c(FALSE, TRUE)], collapse=',')
+  longvector <- c(longvector, chrexample)
+  longvector  <- c(longvector, min(elementsvec))
+  longvector  <- c(longvector, max(elementsvec))
+  longvector  <- c(longvector, min(elementsvec))
+  longvector  <- c(longvector, max(elementsvec))
+  longvector  <- c(longvector, strandexample)
+  longvector  <- c(longvector, gene_name)
+  longvector  <- c(longvector, transcript_name)
+  longvector  <- c(longvector, "coding")
+  longvector  <- c(longvector, startexons)
+  longvector  <- c(longvector, endexons)
+  longvector  <- c(longvector, transcript_name)
+  return(longvector)
+}
+
+refbedexamples.lr49 <- apply(annotatedcufftranscripts.longread.B49.alltranscripts[,c("transcoord", "gene2", "transcriptname")], 1, function(x) getRefBed.lr(x[1],x[2], x[3]))
+refbedexamples.lr49 <- unlist(refbedexamples.lr49)
+refbedexamples.lr49.m <- matrix(refbedexamples.lr49, nrow=12)
+refbedexamples.lr49.m <- as.data.frame(t(refbedexamples.lr49.m), stringsAsFactors = FALSE)
+refbedexamples.lr49.m$V2 <- as.numeric(refbedexamples.lr49.m$V2)
+refbedexamples.lr49.m <- refbedexamples.lr49.m[order(refbedexamples.lr49.m$V1, refbedexamples.lr49.m$V2),]
+write.table(refbedexamples.lr49.m, "merged_transcripts_all_B49LR.refBed", quote = FALSE, col.names = FALSE, row.names = FALSE, sep = "\t")
+```
+
+Used the refbed to do manual annotation of all the transcripts that could potentially have the ORF of interet and label them before the graphing step. 
+
+```{r}
+write.table(peptideSequence.LR.18.df, "peptideSequenceLR18df.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+Now can get the annotated file and reupload it back. 
+
+```{r}
+peptideSequence.LR.18.df.anno <-read.delim("peptideSequenceLR18df_annotated.csv", sep = ",", stringsAsFactors = FALSE, header = TRUE)
+
+p1j <- ggplot(peptideSequence.LR.18.df.anno, aes(x = candidate.peptide, fill = label)) +
+  geom_bar(position = "stack") +
+  theme_classic()
+```
+
+Now incorporate in the expression data. 
+
+```{r}
+indexMatch <- match(peptideSequence.LR.18.df.anno$transcriptname, dataset.lr.numreads.nr.m$transcript)
+
+peptideSequence.LR.18.df.anno$B49_DP <- dataset.lr.numreads.nr.m$B49_DP[indexMatch]
+
+peptideSequence.LR.18.df.anno$B49_WT <- dataset.lr.numreads.nr.m$B49_WT[indexMatch]
+```
+
+Should create the same transcript graphs for all the antigens. I need to create a new function to do this that will incorporate other reading frames to make the protein annotation files. 
+
+Need to firts adjust the exon coordination function to accept transcripts that do not splice into a gene 
+
+```{r}
+getExonCoordViz2 <- function(structurestring, structureref){
+  longvector <- c()
+  chrexample <- strsplit(structurestring, ",")[[1]][2]
+  strandexample <- strsplit(structurestring, ",")[[1]][1]
+  elementsvec <- as.numeric(tail(strsplit(structurestring, ",")[[1]],-2))
+  elementsvec <- sort(elementsvec)
+  startexons <- elementsvec[c(TRUE, FALSE)]
+  endexons <- elementsvec[c(FALSE, TRUE)]
+  
+  if (!(structureref == "None")){
+    elementsvecRef <- as.numeric(strsplit(structureref, ",")[[1]])
+    elementsvecRef <- sort(elementsvecRef)
+    startexonsRef <- elementsvecRef[c(TRUE, FALSE)]
+    endexonsRef <- elementsvecRef[c(FALSE, TRUE)]
+    startexonsRef <- startexonsRef[c(TRUE, FALSE)]
+    endexonsRef <- endexonsRef[c(TRUE, FALSE)]
+  } else {
+    elementsvecRef <- "None"
+    elementsvecRef <- "None"
+    startexonsRef <- "None"
+    endexonsRef <- "None"
+    startexonsRef <- "None"
+    endexonsRef <- "None"
+  }
+  
+  
+  
+  if(strandexample == "+"){
+    currentStart = 0 #We will start at 0 and then build out the vectors to be in Exon space rather than genomic space
+    i = 1
+    newStartExons <- c()
+    newEndExons <- c()
+    labelExon <- c()
+    
+    if(elementsvecRef == "None"){
+      
+      for (startExon in startexons){
+        diffExon <- endexons[i] - startExon + 1
+        newStartExons <- c(newStartExons, currentStart)
+        newEndExons <- c(newEndExons, currentStart + diffExon)
+        currentStart <- currentStart + diffExon
+        labelExon <- c(labelExon, "novel")
+        i = i + 1
+      }
+      
+    } else {
+      ref.df <- data.frame(start = startexonsRef, end = endexonsRef)
+      for (startExon in startexons){
+        
+        diffExon <- endexons[i] - startExon + 1
+        newStartExons <- c(newStartExons, currentStart)
+        newEndExons <- c(newEndExons, currentStart + diffExon)
+        currentStart <- currentStart + diffExon
+        
+        anyoverlap <- apply(ref.df[,c('start','end')], 1, function(x) as.numeric(max(0,min(endexons[i],x[2])-max(startExon,x[1]))))
+        if (sum(anyoverlap) > 0){
+          labelExon <- c(labelExon, "reference")
+        } else {
+          labelExon <- c(labelExon, "novel")
+        }
+        i = i + 1
+      }
+      
+    }
+  } else if(strandexample == "-"){
+    currentStart = 0 #We will start at 0 and then build out the vectors to be in Exon space rather than genomic space
+    
+    startexons <- rev(startexons)
+    endexons <- rev(endexons)
+    
+    i = 1
+    newStartExons <- c()
+    newEndExons <- c()
+    labelExon <- c()
+    
+    if(elementsvecRef == "None"){
+      
+      for (startExon in startexons){
+        diffExon <- endexons[i] - startExon + 1
+        newStartExons <- c(newStartExons, currentStart)
+        newEndExons <- c(newEndExons, currentStart + diffExon)
+        currentStart <- currentStart + diffExon
+        labelExon <- c(labelExon, "novel")
+        i = i + 1
+      }
+      
+    } else {
+    
+      ref.df <- data.frame(start = startexonsRef, end = endexonsRef)
+      for (startExon in startexons){
+        
+        diffExon <- endexons[i] - startExon + 1
+        newStartExons <- c(newStartExons, currentStart)
+        newEndExons <- c(newEndExons, currentStart + diffExon)
+        currentStart <- currentStart + diffExon
+        
+        anyoverlap <- apply(ref.df[,c('start','end')], 1, function(x) as.numeric(max(0,min(endexons[i],x[2])-max(startExon,x[1]))))
+        if (sum(anyoverlap) > 0){
+          labelExon <- c(labelExon, "reference")
+        } else {
+          labelExon <- c(labelExon, "novel")
+        }
+        
+        i = i + 1
+      }
+    }
+  }
+
+  return(data.frame(xmins = newStartExons, xmaxs = newEndExons, labels = labelExon))
+}
+```
+
+Need to add in class annotations
+
+```{r}
+indexsubfams <- match(annotatedcufftranscripts.longread.B49.alltranscripts.cand$subfamTE, TEreftable$V1)
+TEclass_v1 <- TEreftable$V2[indexsubfams]
+TEfamily_v1 <- TEreftable$V3[indexsubfams]
+
+annotatedcufftranscripts.longread.B49.alltranscripts.cand$classTE <- TEclass_v1
+annotatedcufftranscripts.longread.B49.alltranscripts.cand$familyTE <- TEfamily_v1
+```
+
+
+
+```{r}
+#We will only create figures for the transcripts that start from the TE to give a sense of where it is
+
+peptideSequence.LR.18.df.anno.TE <- peptideSequence.LR.18.df.anno[!is.na(peptideSequence.LR.18.df.anno$TEid),]
+
+dir.create("./LRplots")
+
+colorsTE <- c("#528d4c", "#ff8e56", "#7796ee", "#dc544d", "#f7a8a8")
+names(colorsTE) <- c("LTR", "LINE", "DNA", "SINE", "Retroposon")
+
+currentFocusTable <- peptideSequence.LR.18.df.anno.TE
+
+i = 1
+for (currentTranscript in currentFocusTable$transcriptname){
+  candidateTable <- annotatedcufftranscripts.longread.B49.alltranscripts.cand[annotatedcufftranscripts.longread.B49.alltranscripts.cand$transcriptname == currentTranscript,]
+  
+  currentColorTE <- colorsTE[names(colorsTE) == candidateTable$classTE]
+  currentColorTE <- currentColorTE[[1]]
+  
+  vizExons <- apply(candidateTable[,c("transcoord","elements2")], 1,function(x) getExonCoordViz2(x[1],x[2]))
+  
+  overlapTE <- getTEOverlap(candidateTable$transcoord, candidateTable$startTE, candidateTable$endTE)
+  #Depending on your analysis goals, you may want a different width to height ratio 
+  
+  widthToHeight <- 75
+  ratioAnnotation <- .75 #this is the the percentage of height of the main transcript the lower annotations should be
+  
+  # if (currentStrategy == "cpc2"){
+  #   currentStrongStart <- as.numeric(as.character(candidateTable$cpc2_strongstartindex))
+  #   addLength <- nchar(candidateTable$cpc2_proteinseqfull2)*3
+  # } else {
+  #   currentStrongStart <- as.numeric(as.character(candidateTable$strongstartindex))
+  #   addLength <- nchar(candidateTable$proteinseqfull2)*3
+  # }
+  
+  currentStrongStart <- currentFocusTable$start[i]
+  addLength <- currentFocusTable$end[i] - currentFocusTable$start[i] + 1
+  
+  annotation.df <- data.frame(xmins = c(currentStrongStart), xmaxs = c(currentStrongStart + addLength), levelNum = c(1))
+  
+  
+  dfTranscript <- as.data.frame(vizExons[[1]])
+  
+  numExons <- nrow(dfTranscript)
+  
+  xmaxValue <- max(dfTranscript$xmaxs)
+  ymaxValue <- xmaxValue/widthToHeight
+  
+  #Create the TE annotation table
+  annotation.df.TE <- data.frame(xmins = c(0), xmaxs = c(overlapTE))
+  annotation.df.TE$ymins <- -1*(ymaxValue)
+  annotation.df.TE$ymaxs <- -1*(ymaxValue) + ymaxValue*ratioAnnotation
+  annotation.df.TE$ymiddle <- (annotation.df.TE$ymins + annotation.df.TE$ymaxs)/2
+  
+  #Create an annotation for the arrows on the TE depends on orientation of TE in relation to the transcript
+  
+  if (candidateTable$strand == candidateTable$strandTE){
+    annotation.df.TE.segment <- data.frame(xs = c(annotation.df.TE$xmaxs, overlapTE/2, overlapTE/2),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  } else {
+    annotation.df.TE.segment <- data.frame(xs = c(overlapTE/2, annotation.df.TE$xmaxs, annotation.df.TE$xmaxs),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  }
+  
+  #Create dataframe with subfamily annotations
+  annotation.df.TE.subfam <- data.frame(xs = c(annotation.df.TE$xmaxs + 1),
+                               ys = c(annotation.df.TE$ymiddle),
+                               label = c(as.character(candidateTable$subfamTE)),
+                               stringsAsFactors = FALSE)
+  
+  #Create the annotation of the ORF
+  annotation.df$ymins <- -1*(ymaxValue)*(annotation.df$levelNum+1)
+  annotation.df$ymaxs <- -1*(ymaxValue)*(annotation.df$levelNum+1) + ymaxValue*ratioAnnotation
+  annotation.df$ymiddle <- (annotation.df$ymins + annotation.df$ymaxs)/2
+  
+  dfTranscript$ymins <- rep(0, numExons)
+  dfTranscript$ymaxs <- rep(ymaxValue, numExons)
+  dfTranscript$exonnum <- seq(1,numExons)
+  
+  dfTranscript$xmiddle <- (dfTranscript$xmins + dfTranscript$xmaxs)/2
+  dfTranscript$ymiddle <- (dfTranscript$ymins + dfTranscript$ymaxs)/2
+  
+  #The Text Labels for the tracks
+  xposLabel = -1*xmaxValue/9
+  labelTracks.df <- data.frame(xs = c(xposLabel,
+                                      xposLabel,
+                                      xposLabel),
+                               ys = seq(ymaxValue/2, -3*ymaxValue/2, -1*ymaxValue),
+                               label = c("Transcript",
+                                         "TE",
+                                         "ORF")
+                               )
+  
+  #This will hold the adjustment to the hline
+  adjustmentHline = 1
+  
+  gg_splice <- ggplot(data = dfTranscript, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs)) + 
+      geom_rect(aes(fill = labels), color = "black", alpha = .85) +
+      geom_text(aes(x=xmiddle, y=ymiddle, label = exonnum), color = "black") +
+    geom_rect(data = annotation.df.TE, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = currentColorTE, alpha = .95) +
+    geom_polygon(data = annotation.df.TE.segment, aes(x=xs, y=ys), inherit.aes = FALSE) +
+    geom_text(data=annotation.df.TE.subfam, aes(x=xs, y=ys, label = label, fontface = 3), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data = annotation.df, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = "navyblue", alpha = .95) +
+    geom_segment(data = annotation.df, aes(x=xmins, xend=xmaxs, y=ymiddle, yend=ymiddle), color ="white", arrow = arrow(length = unit(0.5, "cm")),size = 1) +
+      scale_fill_manual(values = c(currentColorTE, "gray94"))+
+    labs(x = "Transcript Nucleotide") +
+    geom_hline(yintercept = range(0-adjustmentHline,-1*ymaxValue-adjustmentHline), color = "grey42", alpha = 0.85, linetype="dashed") +
+    geom_vline(xintercept = range(0), color = "black") +
+    geom_text(data=labelTracks.df, aes(x=xs, y=ys, label = label), inherit.aes = FALSE, hjust = 0) +
+      theme_classic() + 
+    scale_x_continuous(expand = c(0,0)) +
+    theme(axis.line.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          axis.title.y=element_blank(),
+          legend.position = "none")
+  
+  ggsave(paste0("./LRplots/",currentFocusTable$TEid[i],"_", currentFocusTable$candidate.peptide[i],"_",currentTranscript, "_TranscriptFigure.pdf"), gg_splice, width = 9, height = 1.8, device = cairo_pdf)
+  
+  i = i + 1
+}
+```
+
+Now this has been passed off to Juheon for further analysis
+
+```{r}
+write.table(peptideSequence.LR.18.df.anno, "peptideSequenceLR18df.anno.juheon.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+#Binding Analysis
+
+The first thing to do is to just see what is the binding of HLA for both the B49 and B66 cells And then just make a table for it. Bascially showing the binding across the alleles across the cell lines so we can display it. In the table we can highlight the 
+
+```{r}
+MHCbinding.peptide <- function(peptide, HLAgenes){
+  returnHLA = c()
+  if (nchar(as.character(peptide)) >= 8){
+    HLAgenes <- HLAgenes[HLAgenes != "HLA-no"]
+    for (HLAgene in HLAgenes){
+      # HLAgene = HLAgenes[1]
+      commandstring = paste0("printf '> Sequence 1 \n",peptide,"' | /bar/nshah/programs/netMHCpan-4.0/netMHCpan -BA -s -a ",HLAgene," -- | grep '*",substring(HLAgene,6,10),"' | awk '{$15=$16=\"\"; print $0}' > ",peptide,HLAgene)
+      print(commandstring)
+      system2("/bin/bash", args = c("-c", shQuote(commandstring)))
+      if(file.info(paste0(peptide,HLAgene)) != 0){
+        tempdata <- read.table(textConnection(rev(rev(readLines(paste0(peptide,HLAgene)))[-(1:1)])), sep = "" , header = FALSE, stringsAsFactors = FALSE)
+        # Only weak and strong binders are included in the final output
+        temptempdata <- tempdata
+        #tempdata <- tempdata[as.numeric(tempdata$V14) < 2.0,]
+      } else {
+        tempdata <- data.frame()
+      }
+      if (!(!nrow(tempdata))){
+        for (rownum in seq(1,nrow(tempdata))){
+          returnHLA <- c(returnHLA, c(peptide, HLAgene, tempdata[rownum,14], tempdata[rownum,13], tempdata[rownum,3]))
+        }
+      }
+      system(paste0("rm ",peptide,HLAgene))
+    }
+  }
+  if (!(is.null(returnHLA))){return(returnHLA)}
+}
+
+HLAgene.OI <- unique(HLA.melt$value[HLA.melt$file_label %in% c("B49", "B66")]) 
+peptideGSCAnalysis <- unique(massSpecPeptide.GSC.table.u.gsantigens$sequence)
+
+resultmhc.1 <- sapply(peptideGSCAnalysis, function(x) {MHCbinding.peptide(x,HLAgene.OI)})
+
+unlisted <- unlist(resultmhc.1, recursive = TRUE)
+
+dimcol = 5
+dimrow = length(unlisted)/(dimcol)
+resultsmhc.1 = data.frame(matrix(unlisted, nrow = dimrow, ncol = dimcol, byrow = TRUE), stringsAsFactors = FALSE)
+
+colnames(resultsmhc.1) <- c("peak","HLA.allele","rank.percentage", "nM binding", "peptide")
+resultsmhc.1$`nM binding` <- as.numeric(resultsmhc.1$`nM binding`)
+resultsmhc.1$`rank.percentage` <- as.numeric(resultsmhc.1$`rank.percentage`)
+
+resultsmhc.1 <- resultsmhc.1[resultsmhc.1$peak == resultsmhc.1$peptide,]
+```
+
+We can do the same thing for the 18 detected in the long-read analysis
+
+```{r}
+HLAgene.OI <- unique(HLA.melt$value[HLA.melt$file_label %in% c("B49")]) 
+peptideGSCAnalysis.LR <- as.character(unique(peptipeptideTableFinalLR.bf.filfil$sequence))
+
+resultmhc.2 <- sapply(peptideGSCAnalysis.LR, function(x) {MHCbinding.peptide(x,HLAgene.OI)})
+
+unlisted <- unlist(resultmhc.2, recursive = TRUE)
+
+dimcol = 5
+dimrow = length(unlisted)/(dimcol)
+resultsmhc.2 = data.frame(matrix(unlisted, nrow = dimrow, ncol = dimcol, byrow = TRUE), stringsAsFactors = FALSE)
+
+colnames(resultsmhc.2) <- c("peak","HLA.allele","rank.percentage", "nM binding", "peptide")
+resultsmhc.2$`nM binding` <- as.numeric(resultsmhc.2$`nM binding`)
+resultsmhc.2$`rank.percentage` <- as.numeric(resultsmhc.2$`rank.percentage`)
+
+resultsmhc.2 <- resultsmhc.2[resultsmhc.2$peak == resultsmhc.2$peptide,]
+```
+
+Exporting all the data so that we can create figures with the netMHC binding data. 
+
+```{r}
+write.table(HLA.melt, "./HLArebuttalanalysis/HLA.allele.juheon.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+
+write.table(resultsmhc.1, "./HLArebuttalanalysis/HLA.allele.binding.SR.juheon.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+
+write.table(resultsmhc.2, "./HLArebuttalanalysis/HLA.allele.binding.LRB49.juheon.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+
+#GTEx Analysis
+
+Now that we have processed the data through, we can get the GTEx data in or the two types of data. 
+
+```{r}
+gtexLabels <- read.delim("/scratch/nakul/TCGA33runALL_rebuttal/GTEx/GTEx/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt", stringsAsFactors = F)
+
+intronGtexexpressiontable <- read.delim("/scratch/jmaeng/GSC_grad/GTEx/table_i_all.teprof2",header=FALSE, stringsAsFactors = FALSE)
+intronGtexexpressiontable <- as.data.frame(t(intronGtexexpressiontable))
+intronGtexexpressiontable <- data.frame(lapply(intronGtexexpressiontable, as.character), stringsAsFactors=FALSE)
+
+intronGtexlabels <- paste(intronGtexexpressiontable[1,2:ncol(intronGtexexpressiontable)], intronGtexexpressiontable[2,2:ncol(intronGtexexpressiontable)], intronGtexexpressiontable[3,2:ncol(intronGtexexpressiontable)], intronGtexexpressiontable[4,2:ncol(intronGtexexpressiontable)], sep = "_")
+intronGtexlabels <- c("TranscriptID",intronGtexlabels)
+
+colnames(intronGtexexpressiontable) <- intronGtexlabels
+
+intronGtexexpressiontable <- intronGtexexpressiontable[c(-1,-2,-3,-4),]
+
+intronGtexexpressiontable[-1] <- lapply(intronGtexexpressiontable[-1], as.numeric)
+
+#intronGtexexpressiontable.m <- melt(intronGtexexpressiontable, id.vars = c('TranscriptID'))
+
+tpmGtextable <- read.delim("/scratch/jmaeng/GSC_grad/GTEx/table_tpm_cand.teprof2",header=FALSE, stringsAsFactors = FALSE)
+tpmGtextable <- as.data.frame(t(tpmGtextable))
+tpmGtextable <- data.frame(lapply(tpmGtextable, as.character), stringsAsFactors=FALSE)
+colnames(tpmGtextable) <- as.character(tpmGtextable[1,])
+tpmGtextable <- tpmGtextable[c(-1),]
+tpmGtextable[-1] <- lapply(tpmGtextable[-1], as.numeric)
+
+#save.image("/scratch/twlab/nshah/TCGA33/051121.RData")
+```
+
+```{r}
+#load("/scratch/twlab/nshah/TCGA33/051121.RData")
+library(reshape2)
+
+intronGtexexpressiontable.m <- melt(intronGtexexpressiontable, id.vars = c('TranscriptID'))
+
+rm(intronGtexexpressiontable)
+gc()
+
+tpmGtextable.m <- melt(tpmGtextable, id.vars = c('TranscriptID'))
+
+#Ran up to HERE
+
+
+#To save memory I need to get rid of those transcripts where they will not make the tpm thresshold. 
+
+rm(tpmGtextable)
+#tpmGtextable.m <- tpmGtextable.m[tpmGtextable.m$value > 1,]
+gc()
+
+
+indexfileintron1 <- match(tpmGtextable.m$variable, annotatedcufftranscripts$transcriptname)
+
+tpmGtextable.m$intronlabel <- annotatedcufftranscripts$intronname[indexfileintron1]
+
+#Remove those that are not in our masterlist of transcripts
+tpmGtextable.m <- tpmGtextable.m[!is.na(tpmGtextable.m$intronlabel),]
+
+tpmGtextable.m$fileintronlabel <- paste(gsub("-",".",tpmGtextable.m$TranscriptID), tpmGtextable.m$intronlabel, sep = '_')
+intronGtexexpressiontable.m$fileintronlabel <- paste(gsub("_stats","",intronGtexexpressiontable.m$TranscriptID), intronGtexexpressiontable.m$variable, sep = '_')
+
+indexfileintron <- match(tpmGtextable.m$fileintronlabel, intronGtexexpressiontable.m$fileintronlabel)
+
+tpmGtextable.m$intronread <- intronGtexexpressiontable.m$value[indexfileintron]
+
+write.table(tpmGtextable.m, "allTPMGTEXtable.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+
+tpmGtextable.m <- tpmGtextable.m[tpmGtextable.m$value >= 1 & tpmGtextable.m$intronread >= 1,]
+```
+
+```{r}
+
+gtexPFrequency <- as.data.frame(table(tpmGtextable.m$variable))
+
+gtexLabels$fileName <- paste0(gtexLabels$SAMPID, "_gscAligned.sortedByCoord.out.bam")
+
+tpmGtextable.m <- tpmGtextable.m[!is.na(tpmGtextable.m$TranscriptID),]
+
+indexMatch <- match(tpmGtextable.m$TranscriptID, gtexLabels$fileName)
+
+tpmGtextable.m$tissue.id <- gtexLabels$SMTS[indexMatch]
+```
+
+Need to get total numbers of each tissue in the GTEx table so that we can use there
+
+```{r}
+gtexSamples <- data.frame(fileNameRaw = unique(intronGtexexpressiontable.m$TranscriptID))
+gtexSamples$fileNameRaw <- gsub("_stats","", gtexSamples$fileNameRaw)
+
+gtexSamples$fileName <- paste0(gsub("[.]","-",sapply(gtexSamples$fileNameRaw, function(x) strsplit(x, "_")[[1]][1])), "_", sapply(gtexSamples$fileNameRaw, function(x) strsplit(x, "_")[[1]][2]))
+
+indexMatch <- match(gtexSamples$fileName, gtexLabels$fileName)
+
+gtexSamples$tissue.id <- gtexLabels$SMTS[indexMatch]
+
+gtexSamplesFrequency <- as.data.frame(table(gtexSamples$tissue.id))
+
+colnames(gtexSamplesFrequency) <- c("tissue.id","Freq")
+```
+
+Now can create a table that shows the number and fraction of each tissue type that a specific transcript is present in. Once we have that for both, then can label those that are for the antigens and then decide how to create the heatmaps of the percentage of tissue types it is present in. 
+
+```{r}
+gtexNumFracTable <- data.frame()
+
+for(transcriptid in annotatedcufftranscripts$transcriptname){
+  freq.table <- as.data.frame(table(tpmGtextable.m$tissue.id[tpmGtextable.m$variable == transcriptid]))
+  gtexSamplesFrequency.temp <- gtexSamplesFrequency 
+  
+  gtexSamplesFrequency.temp$Freq.tid <- freq.table$Freq[match(gtexSamplesFrequency.temp$tissue.id, freq.table$Var1)]
+  
+  gtexSamplesFrequency.temp$Freq.tid[is.na(gtexSamplesFrequency.temp$Freq.tid)] <- 0
+  
+  gtexSamplesFrequency.temp$Frac.tid <- gtexSamplesFrequency.temp$Freq.tid/gtexSamplesFrequency.temp$Freq
+  
+  gtexSamplesFrequency.temp$Freq <- NULL
+  
+  gtexSamplesFrequency.temp$transcriptname <- rep(transcriptid, nrow(gtexSamplesFrequency.temp))
+  
+  gtexNumFracTable <- rbind(gtexNumFracTable, gtexSamplesFrequency.temp)
+}
+```
+
+```{r}
+transcriptPeakTable.antigenic.cand.fil <- transcriptPeakTable.antigenic.cand[transcriptPeakTable.antigenic.cand$B66_antigenic == TRUE | transcriptPeakTable.antigenic.cand$B49_antigenic == TRUE | transcriptPeakTable.antigenic.cand$B36_antigenic == TRUE,]
+
+gtexNumFracTable.antigenic <- gtexNumFracTable[gtexNumFracTable$transcriptname %in% annotatedcufftranscripts.fil.c.antigenic.cand$transcriptname,]
+
+peptideRepeatGraphTable$transcriptname <- annotatedcufftranscripts.fil.c.antigenic$transcriptname[match(peptideRepeatGraphTable$uniqid, annotatedcufftranscripts.fil.c.antigenic$uniqid)]
+
+gtexNumFracTable.antigenic$sequence.cand <- peptideRepeatGraphTable$sequence[match(gtexNumFracTable.antigenic$transcriptname, peptideRepeatGraphTable$transcriptname)]
+```
+
+```{r}
+write.table(gtexNumFracTable.antigenic, "./gtexrebuttalanalysis/gtexAnalysis.SRantigenic.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+##LR Version of GTEx Analysis
+
+```{r}
+intronGtexexpressiontable.LR <- read.delim("/scratch/jmaeng/GSC_grad/GTEx/table_i_all.longreadB49",header=FALSE, stringsAsFactors = FALSE)
+intronGtexexpressiontable.LR <- as.data.frame(t(intronGtexexpressiontable.LR))
+intronGtexexpressiontable.LR <- data.frame(lapply(intronGtexexpressiontable.LR, as.character), stringsAsFactors=FALSE)
+
+intronGtexlabels <- paste(intronGtexexpressiontable.LR[1,2:ncol(intronGtexexpressiontable.LR)], intronGtexexpressiontable.LR[2,2:ncol(intronGtexexpressiontable.LR)], intronGtexexpressiontable.LR[3,2:ncol(intronGtexexpressiontable.LR)], intronGtexexpressiontable.LR[4,2:ncol(intronGtexexpressiontable.LR)], sep = "_")
+intronGtexlabels <- c("TranscriptID",intronGtexlabels)
+
+colnames(intronGtexexpressiontable.LR) <- intronGtexlabels
+
+intronGtexexpressiontable.LR <- intronGtexexpressiontable.LR[c(-1,-2,-3,-4),]
+
+intronGtexexpressiontable.LR[-1] <- lapply(intronGtexexpressiontable.LR[-1], as.numeric)
+
+#intronGtexexpressiontable.LR.m <- melt(intronGtexexpressiontable.LR, id.vars = c('TranscriptID'))
+
+tpmGtextable.LR <- read.delim("/scratch/jmaeng/GSC_grad/GTEx/table_tpm_cand.longreadB49",header=FALSE, stringsAsFactors = FALSE)
+tpmGtextable.LR <- as.data.frame(t(tpmGtextable.LR))
+tpmGtextable.LR <- data.frame(lapply(tpmGtextable.LR, as.character), stringsAsFactors=FALSE)
+colnames(tpmGtextable.LR) <- as.character(tpmGtextable.LR[1,])
+tpmGtextable.LR <- tpmGtextable.LR[c(-1),]
+tpmGtextable.LR[-1] <- lapply(tpmGtextable.LR[-1], as.numeric)
+
+#save.image("/scratch/twlab/nshah/TCGA33/051121.RData")
+```
+
+```{r}
+#load("/scratch/twlab/nshah/TCGA33/051121.RData")
+library(reshape2)
+
+intronGtexexpressiontable.LR.m <- melt(intronGtexexpressiontable.LR, id.vars = c('TranscriptID'))
+
+rm(intronGtexexpressiontable.LR)
+gc()
+
+tpmGtextable.LR.m <- melt(tpmGtextable.LR, id.vars = c('TranscriptID'))
+
+#Ran up to HERE
+
+
+#To save memory I need to get rid of those transcripts where they will not make the tpm thresshold. 
+
+rm(tpmGtextable.LR)
+#tpmGtextable.LR.m <- tpmGtextable.LR.m[tpmGtextable.LR.m$value > 1,]
+gc()
+
+annotatedcufftranscripts.longread.e.B49$intronname <- paste(annotatedcufftranscripts.longread.e.B49$chrTE,annotatedcufftranscripts.longread.e.B49$strand,annotatedcufftranscripts.longread.e.B49$intronjunstart,annotatedcufftranscripts.longread.e.B49$intronjunend, sep = "_")
+
+indexfileintron1 <- match(tpmGtextable.LR.m$variable, annotatedcufftranscripts.longread.e.B49$transcriptname)
+
+tpmGtextable.LR.m$intronlabel <- annotatedcufftranscripts.longread.e.B49$intronname[indexfileintron1]
+
+#Remove those that are not in our masterlist of transcripts
+tpmGtextable.LR.m <- tpmGtextable.LR.m[!is.na(tpmGtextable.LR.m$intronlabel),]
+
+tpmGtextable.LR.m$fileintronlabel <- paste(gsub("-",".",tpmGtextable.LR.m$TranscriptID), tpmGtextable.LR.m$intronlabel, sep = '_')
+intronGtexexpressiontable.LR.m$fileintronlabel <- paste(gsub("_stats","",intronGtexexpressiontable.LR.m$TranscriptID), intronGtexexpressiontable.LR.m$variable, sep = '_')
+
+indexfileintron <- match(tpmGtextable.LR.m$fileintronlabel, intronGtexexpressiontable.LR.m$fileintronlabel)
+
+tpmGtextable.LR.m$intronread <- intronGtexexpressiontable.LR.m$value[indexfileintron]
+
+write.table(tpmGtextable.LR.m, "allTPMGTEXtable.LR.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+
+tpmGtextable.LR.m <- tpmGtextable.LR.m[tpmGtextable.LR.m$value >= 1 & tpmGtextable.LR.m$intronread >= 1,]
+```
+
+```{r}
+
+gtexPFrequency <- as.data.frame(table(tpmGtextable.LR.m$variable))
+
+gtexLabels$fileName <- paste0(gtexLabels$SAMPID, "_gscAligned.sortedByCoord.out.bam")
+
+tpmGtextable.LR.m <- tpmGtextable.LR.m[!is.na(tpmGtextable.LR.m$TranscriptID),]
+
+indexMatch <- match(tpmGtextable.LR.m$TranscriptID, gtexLabels$fileName)
+
+tpmGtextable.LR.m$tissue.id <- gtexLabels$SMTS[indexMatch]
+```
+
+Need to get total numbers of each tissue in the GTEx table so that we can use there
+
+```{r}
+gtexSamples.LR <- data.frame(fileNameRaw = unique(intronGtexexpressiontable.LR.m$TranscriptID))
+gtexSamples.LR$fileNameRaw <- gsub("_stats","", gtexSamples.LR$fileNameRaw)
+
+gtexSamples.LR$fileName <- paste0(gsub("[.]","-",sapply(gtexSamples.LR$fileNameRaw, function(x) strsplit(x, "_")[[1]][1])), "_", sapply(gtexSamples.LR$fileNameRaw, function(x) strsplit(x, "_")[[1]][2]))
+
+indexMatch <- match(gtexSamples.LR$fileName, gtexLabels$fileName)
+
+gtexSamples.LR$tissue.id <- gtexLabels$SMTS[indexMatch]
+
+gtexSamples.LRFrequency <- as.data.frame(table(gtexSamples.LR$tissue.id))
+
+colnames(gtexSamples.LRFrequency) <- c("tissue.id","Freq")
+```
+
+Now can create a table that shows the number and fraction of each tissue type that a specific transcript is present in. Once we have that for both, then can label those that are for the antigens and then decide how to create the heatmaps of the percentage of tissue types it is present in. 
+
+```{r}
+gtexNumFracTable.LR <- data.frame()
+
+for(transcriptid in annotatedcufftranscripts.longread.e.B49$transcriptname){
+  freq.table <- as.data.frame(table(tpmGtextable.LR.m$tissue.id[tpmGtextable.LR.m$variable == transcriptid]))
+  gtexSamples.LRFrequency.temp <- gtexSamples.LRFrequency 
+  
+  gtexSamples.LRFrequency.temp$Freq.tid <- freq.table$Freq[match(gtexSamples.LRFrequency.temp$tissue.id, freq.table$Var1)]
+  
+  gtexSamples.LRFrequency.temp$Freq.tid[is.na(gtexSamples.LRFrequency.temp$Freq.tid)] <- 0
+  
+  gtexSamples.LRFrequency.temp$Frac.tid <- gtexSamples.LRFrequency.temp$Freq.tid/gtexSamples.LRFrequency.temp$Freq
+  
+  gtexSamples.LRFrequency.temp$Freq <- NULL
+  
+  gtexSamples.LRFrequency.temp$transcriptname <- rep(transcriptid, nrow(gtexSamples.LRFrequency.temp))
+  
+  gtexNumFracTable.LR <- rbind(gtexNumFracTable.LR, gtexSamples.LRFrequency.temp)
+}
+```
+
+```{r}
+gtexNumFracTable.LR.antigenic <- gtexNumFracTable.LR[gtexNumFracTable.LR$transcriptname %in% peptideSequence.LR.18.df.anno.TE$transcriptname,]
+
+#peptideRepeatGraphTable$transcriptname <- annotatedcufftranscripts.fil.c.antigenic$transcriptname[match(peptideRepeatGraphTable$uniqid, annotatedcufftranscripts.fil.c.antigenic$uniqid)]
+
+gtexNumFracTable.LR.antigenic$sequence.cand <- peptideSequence.LR.18.df.anno.TE$candidate.peptide[match(gtexNumFracTable.LR.antigenic$transcriptname, peptideSequence.LR.18.df.anno.TE$transcriptname)]
+
+LR.antigen.mapping <- unique(peptideSequence.LR.18.df.anno.TE[, c("transcriptname" , "candidate.peptide")])
+
+write.table(LR.antigen.mapping, "./gtexrebuttalanalysis/gtexAnalysis.LRantigenic.multipletranscripts.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+```{r}
+write.table(gtexNumFracTable.LR.antigenic, "./gtexrebuttalanalysis/gtexAnalysis.LRantigenic.csv", quote = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
+```
+
+## Visualizing location of ORF within transcript
+
+A useful tool is to be able to visualize the ORF on the transcript itself so then we can show which exmn each part of hte transcript is coming from
+
+```{r}
+colorsTE <- c("#528d4c", "#ff8e56", "#7796ee", "#dc544d", "#f7a8a8")
+names(colorsTE) <- c("LTR", "LINE", "DNA", "SINE", "Retroposon")
+
+currentFocusTable <- annotatedcufftranscripts.fil.c.antigenic
+currentStrategy <- "kozak"
+
+for (currentTranscript in currentFocusTable$transcriptname){
+  candidateTable <- annotatedcufftranscripts.fil.c[annotatedcufftranscripts.fil.c$transcriptname == currentTranscript,]
+  
+  currentColorTE <- colorsTE[names(colorsTE) == candidateTable$classTE]
+  currentColorTE <- currentColorTE[[1]]
+  
+  vizExons <- apply(candidateTable[,c("transcoord","elements2")], 1,function(x) getExonCoordViz(x[1],x[2]))
+  
+  overlapTE <- getTEOverlap(candidateTable$transcoord, candidateTable$startTE, candidateTable$endTE)
+  #Depending on your analysis goals, you may want a different width to height ratio 
+  
+  widthToHeight <- 75
+  ratioAnnotation <- .75 #this is the the percentage of height of the main transcript the lower annotations should be
+  
+  if (currentStrategy == "cpc2"){
+    currentStrongStart <- as.numeric(as.character(candidateTable$cpc2_strongstartindex))
+    addLength <- nchar(candidateTable$cpc2_proteinseqfull2)*3
+    seqAA <- candidateTable$cpc2_proteinseqfull2
+  } else {
+    currentStrongStart <- as.numeric(as.character(candidateTable$strongstartindex))
+    addLength <- nchar(candidateTable$proteinseqfull2)*3
+    seqAA <- candidateTable$proteinseqfull2
+  }
+  
+  if(!is.na(currentStrongStart) & seqAA != ""){
+  
+  annotation.df <- data.frame(xmins = c(currentStrongStart), xmaxs = c(currentStrongStart + addLength), levelNum = c(1))
+  
+  
+  dfTranscript <- as.data.frame(vizExons[[1]])
+  
+  numExons <- nrow(dfTranscript)
+  
+  xmaxValue <- max(dfTranscript$xmaxs)
+  ymaxValue <- xmaxValue/widthToHeight
+  
+  #Create the TE annotation table
+  annotation.df.TE <- data.frame(xmins = c(0), xmaxs = c(overlapTE))
+  annotation.df.TE$ymins <- -1*(ymaxValue)
+  annotation.df.TE$ymaxs <- -1*(ymaxValue) + ymaxValue*ratioAnnotation
+  annotation.df.TE$ymiddle <- (annotation.df.TE$ymins + annotation.df.TE$ymaxs)/2
+  
+  #Create an annotation for the arrows on the TE depends on orientation of TE in relation to the transcript
+  
+  if (candidateTable$strand == candidateTable$strandTE){
+    annotation.df.TE.segment <- data.frame(xs = c(annotation.df.TE$xmaxs, overlapTE/2, overlapTE/2),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  } else {
+    annotation.df.TE.segment <- data.frame(xs = c(overlapTE/2, annotation.df.TE$xmaxs, annotation.df.TE$xmaxs),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  }
+  
+  #Create dataframe with subfamily annotations
+  annotation.df.TE.subfam <- data.frame(xs = c(annotation.df.TE$xmaxs + 1),
+                               ys = c(annotation.df.TE$ymiddle),
+                               label = c(as.character(candidateTable$subfamTE)),
+                               stringsAsFactors = FALSE)
+  
+  #Create the annotation of the ORF
+  annotation.df$ymins <- -1*(ymaxValue)*(annotation.df$levelNum+1)
+  annotation.df$ymaxs <- -1*(ymaxValue)*(annotation.df$levelNum+1) + ymaxValue*ratioAnnotation
+  annotation.df$ymiddle <- (annotation.df$ymins + annotation.df$ymaxs)/2
+  
+  dfTranscript$ymins <- rep(0, numExons)
+  dfTranscript$ymaxs <- rep(ymaxValue, numExons)
+  dfTranscript$exonnum <- seq(1,numExons)
+  
+  dfTranscript$xmiddle <- (dfTranscript$xmins + dfTranscript$xmaxs)/2
+  dfTranscript$ymiddle <- (dfTranscript$ymins + dfTranscript$ymaxs)/2
+  
+  #The Text Labels for the tracks
+  xposLabel = -1*xmaxValue/9
+  labelTracks.df <- data.frame(xs = c(xposLabel,
+                                      xposLabel,
+                                      xposLabel),
+                               ys = seq(ymaxValue/2, -3*ymaxValue/2, -1*ymaxValue),
+                               label = c("Transcript",
+                                         "TE",
+                                         "ORF")
+                               )
+  
+  #ORF sequence on top of the exons
+  numAA <- addLength/3
+  startPos <- annotation.df$xmins[1]
+  startVectemp <- seq(startPos,numAA*3+startPos-3,3)
+  annotation.df.ORF <- data.frame(xmins = startVectemp, xmaxs = startVectemp+3, xmiddle = startVectemp + 1,ymins = rep(ymaxValue+1, numAA), ymaxs = ymaxValue*1.5, ymiddle = ymaxValue*1.25, AA = unlist(strsplit(seqAA, split = "")))
+  
+  #This will hold the adjustment to the hline
+  adjustmentHline = 1
+  
+  gg_splice <- ggplot(data = dfTranscript, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs)) + 
+      geom_rect(aes(fill = labels), color = "black", alpha = .85) +
+      geom_text(aes(x=xmiddle, y=ymiddle, label = exonnum), color = "black") +
+    geom_rect(data = annotation.df.TE, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = currentColorTE, alpha = .95) +
+    geom_polygon(data = annotation.df.TE.segment, aes(x=xs, y=ys), inherit.aes = FALSE) +
+    geom_text(data=annotation.df.TE.subfam, aes(x=xs, y=ys, label = label, fontface = 3), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data = annotation.df, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = "navyblue", alpha = .95) +
+    geom_segment(data = annotation.df, aes(x=xmins, xend=xmaxs, y=ymiddle, yend=ymiddle), color ="white", arrow = arrow(length = unit(0.5, "cm")),size = 1) +
+      scale_fill_manual(values = c(currentColorTE, "gray94"))+
+    labs(x = "Transcript Nucleotide") +
+    geom_hline(yintercept = range(0-adjustmentHline,-1*ymaxValue-adjustmentHline), color = "grey42", alpha = 0.85, linetype="dashed") +
+    geom_vline(xintercept = range(0), color = "black") +
+    geom_text(data=labelTracks.df, aes(x=xs, y=ys, label = label), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data =  annotation.df.ORF, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "black", fill = "white", alpha = .95) +
+    geom_text(data = annotation.df.ORF, aes(x= xmiddle, y= ymiddle, label = AA, fontface = 1.5), inherit.aes = FALSE, hjust = 0) +
+      theme_classic() + 
+    scale_x_continuous(expand = c(0,0)) +
+    theme(axis.line.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          axis.title.y=element_blank(),
+          legend.position = "none")
+  
+  ggsave(paste0("./transcriptPlotsSeq/","_", candidateTable$uniqid ,currentTranscript,"_",currentStrategy,"_TranscriptFigure.pdf"), gg_splice, width = 450, height = 1.8, device = cairo_pdf, limitsize = FALSE)
+  }
+  
+}
+```
+
+```{r}
+colorsTE <- c("#528d4c", "#ff8e56", "#7796ee", "#dc544d", "#f7a8a8")
+names(colorsTE) <- c("LTR", "LINE", "DNA", "SINE", "Retroposon")
+
+currentFocusTable <- annotatedcufftranscripts.fil.c.antigenic
+currentStrategy <- "cpc2"
+
+for (currentTranscript in currentFocusTable$transcriptname){
+  candidateTable <- annotatedcufftranscripts.fil.c[annotatedcufftranscripts.fil.c$transcriptname == currentTranscript,]
+  
+  currentColorTE <- colorsTE[names(colorsTE) == candidateTable$classTE]
+  currentColorTE <- currentColorTE[[1]]
+  
+  vizExons <- apply(candidateTable[,c("transcoord","elements2")], 1,function(x) getExonCoordViz(x[1],x[2]))
+  
+  overlapTE <- getTEOverlap(candidateTable$transcoord, candidateTable$startTE, candidateTable$endTE)
+  #Depending on your analysis goals, you may want a different width to height ratio 
+  
+  widthToHeight <- 75
+  ratioAnnotation <- .75 #this is the the percentage of height of the main transcript the lower annotations should be
+  
+  if (currentStrategy == "cpc2"){
+    currentStrongStart <- as.numeric(as.character(candidateTable$cpc2_strongstartindex))
+    addLength <- nchar(candidateTable$cpc2_proteinseqfull2)*3
+    seqAA <- candidateTable$cpc2_proteinseqfull2
+  } else {
+    currentStrongStart <- as.numeric(as.character(candidateTable$strongstartindex))
+    addLength <- nchar(candidateTable$proteinseqfull2)*3
+    seqAA <- candidateTable$proteinseqfull2
+  }
+  
+  if(!is.na(currentStrongStart) & seqAA != ""){
+  
+  annotation.df <- data.frame(xmins = c(currentStrongStart), xmaxs = c(currentStrongStart + addLength), levelNum = c(1))
+  
+  
+  dfTranscript <- as.data.frame(vizExons[[1]])
+  
+  numExons <- nrow(dfTranscript)
+  
+  xmaxValue <- max(dfTranscript$xmaxs)
+  ymaxValue <- xmaxValue/widthToHeight
+  
+  #Create the TE annotation table
+  annotation.df.TE <- data.frame(xmins = c(0), xmaxs = c(overlapTE))
+  annotation.df.TE$ymins <- -1*(ymaxValue)
+  annotation.df.TE$ymaxs <- -1*(ymaxValue) + ymaxValue*ratioAnnotation
+  annotation.df.TE$ymiddle <- (annotation.df.TE$ymins + annotation.df.TE$ymaxs)/2
+  
+  #Create an annotation for the arrows on the TE depends on orientation of TE in relation to the transcript
+  
+  if (candidateTable$strand == candidateTable$strandTE){
+    annotation.df.TE.segment <- data.frame(xs = c(annotation.df.TE$xmaxs, overlapTE/2, overlapTE/2),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  } else {
+    annotation.df.TE.segment <- data.frame(xs = c(overlapTE/2, annotation.df.TE$xmaxs, annotation.df.TE$xmaxs),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  }
+  
+  #Create dataframe with subfamily annotations
+  annotation.df.TE.subfam <- data.frame(xs = c(annotation.df.TE$xmaxs + 1),
+                               ys = c(annotation.df.TE$ymiddle),
+                               label = c(as.character(candidateTable$subfamTE)),
+                               stringsAsFactors = FALSE)
+  
+  #Create the annotation of the ORF
+  annotation.df$ymins <- -1*(ymaxValue)*(annotation.df$levelNum+1)
+  annotation.df$ymaxs <- -1*(ymaxValue)*(annotation.df$levelNum+1) + ymaxValue*ratioAnnotation
+  annotation.df$ymiddle <- (annotation.df$ymins + annotation.df$ymaxs)/2
+  
+  dfTranscript$ymins <- rep(0, numExons)
+  dfTranscript$ymaxs <- rep(ymaxValue, numExons)
+  dfTranscript$exonnum <- seq(1,numExons)
+  
+  dfTranscript$xmiddle <- (dfTranscript$xmins + dfTranscript$xmaxs)/2
+  dfTranscript$ymiddle <- (dfTranscript$ymins + dfTranscript$ymaxs)/2
+  
+  #The Text Labels for the tracks
+  xposLabel = -1*xmaxValue/9
+  labelTracks.df <- data.frame(xs = c(xposLabel,
+                                      xposLabel,
+                                      xposLabel),
+                               ys = seq(ymaxValue/2, -3*ymaxValue/2, -1*ymaxValue),
+                               label = c("Transcript",
+                                         "TE",
+                                         "ORF")
+                               )
+  
+  #ORF sequence on top of the exons
+  numAA <- addLength/3
+  startPos <- annotation.df$xmins[1]
+  startVectemp <- seq(startPos,numAA*3+startPos-3,3)
+  annotation.df.ORF <- data.frame(xmins = startVectemp, xmaxs = startVectemp+3, xmiddle = startVectemp + 1,ymins = rep(ymaxValue+1, numAA), ymaxs = ymaxValue*1.5, ymiddle = ymaxValue*1.25, AA = unlist(strsplit(seqAA, split = "")))
+  
+  #This will hold the adjustment to the hline
+  adjustmentHline = 1
+  
+  gg_splice <- ggplot(data = dfTranscript, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs)) + 
+      geom_rect(aes(fill = labels), color = "black", alpha = .85) +
+      geom_text(aes(x=xmiddle, y=ymiddle, label = exonnum), color = "black") +
+    geom_rect(data = annotation.df.TE, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = currentColorTE, alpha = .95) +
+    geom_polygon(data = annotation.df.TE.segment, aes(x=xs, y=ys), inherit.aes = FALSE) +
+    geom_text(data=annotation.df.TE.subfam, aes(x=xs, y=ys, label = label, fontface = 3), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data = annotation.df, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = "navyblue", alpha = .95) +
+    geom_segment(data = annotation.df, aes(x=xmins, xend=xmaxs, y=ymiddle, yend=ymiddle), color ="white", arrow = arrow(length = unit(0.5, "cm")),size = 1) +
+      scale_fill_manual(values = c(currentColorTE, "gray94"))+
+    labs(x = "Transcript Nucleotide") +
+    geom_hline(yintercept = range(0-adjustmentHline,-1*ymaxValue-adjustmentHline), color = "grey42", alpha = 0.85, linetype="dashed") +
+    geom_vline(xintercept = range(0), color = "black") +
+    geom_text(data=labelTracks.df, aes(x=xs, y=ys, label = label), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data =  annotation.df.ORF, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "black", fill = "white", alpha = .95) +
+    geom_text(data = annotation.df.ORF, aes(x= xmiddle, y= ymiddle, label = AA, fontface = 1.5), inherit.aes = FALSE, hjust = 0) +
+      theme_classic() + 
+    scale_x_continuous(expand = c(0,0)) +
+    theme(axis.line.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          axis.title.y=element_blank(),
+          legend.position = "none")
+  
+  ggsave(paste0("./transcriptPlotsSeq/","_", candidateTable$uniqid ,currentTranscript,"_",currentStrategy,"_TranscriptFigure.pdf"), gg_splice, width = 450, height = 1.8, device = cairo_pdf, limitsize = FALSE)
+  }
+  
+}
+```
+
+```{r}
+peptideSequence.LR.18.df.anno.TE <- peptideSequence.LR.18.df.anno[!is.na(peptideSequence.LR.18.df.anno$TEid),]
+
+dir.create("./LRplotsSeq")
+
+colorsTE <- c("#528d4c", "#ff8e56", "#7796ee", "#dc544d", "#f7a8a8")
+names(colorsTE) <- c("LTR", "LINE", "DNA", "SINE", "Retroposon")
+
+currentFocusTable <- peptideSequence.LR.18.df.anno.TE
+
+i = 1
+for (currentTranscript in currentFocusTable$transcriptname){
+  candidateTable <- annotatedcufftranscripts.longread.B49.alltranscripts.cand[annotatedcufftranscripts.longread.B49.alltranscripts.cand$transcriptname == currentTranscript,]
+  
+  currentColorTE <- colorsTE[names(colorsTE) == candidateTable$classTE]
+  currentColorTE <- currentColorTE[[1]]
+  
+  vizExons <- apply(candidateTable[,c("transcoord","elements2")], 1,function(x) getExonCoordViz2(x[1],x[2]))
+  
+  overlapTE <- getTEOverlap(candidateTable$transcoord, candidateTable$startTE, candidateTable$endTE)
+  #Depending on your analysis goals, you may want a different width to height ratio 
+  
+  widthToHeight <- 75
+  ratioAnnotation <- .75 #this is the the percentage of height of the main transcript the lower annotations should be
+  
+  # if (currentStrategy == "cpc2"){
+  #   currentStrongStart <- as.numeric(as.character(candidateTable$cpc2_strongstartindex))
+  #   addLength <- nchar(candidateTable$cpc2_proteinseqfull2)*3
+  # } else {
+  #   currentStrongStart <- as.numeric(as.character(candidateTable$strongstartindex))
+  #   addLength <- nchar(candidateTable$proteinseqfull2)*3
+  # }
+  
+  currentStrongStart <- currentFocusTable$start[i]
+  addLength <- currentFocusTable$end[i] - currentFocusTable$start[i] + 1
+  
+  annotation.df <- data.frame(xmins = c(currentStrongStart), xmaxs = c(currentStrongStart + addLength), levelNum = c(1))
+  
+  
+  dfTranscript <- as.data.frame(vizExons[[1]])
+  
+  numExons <- nrow(dfTranscript)
+  
+  xmaxValue <- max(dfTranscript$xmaxs)
+  ymaxValue <- xmaxValue/widthToHeight
+  
+  #Create the TE annotation table
+  annotation.df.TE <- data.frame(xmins = c(0), xmaxs = c(overlapTE))
+  annotation.df.TE$ymins <- -1*(ymaxValue)
+  annotation.df.TE$ymaxs <- -1*(ymaxValue) + ymaxValue*ratioAnnotation
+  annotation.df.TE$ymiddle <- (annotation.df.TE$ymins + annotation.df.TE$ymaxs)/2
+  
+  #Create an annotation for the arrows on the TE depends on orientation of TE in relation to the transcript
+  
+  if (candidateTable$strand == candidateTable$strandTE){
+    annotation.df.TE.segment <- data.frame(xs = c(annotation.df.TE$xmaxs, overlapTE/2, overlapTE/2),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  } else {
+    annotation.df.TE.segment <- data.frame(xs = c(overlapTE/2, annotation.df.TE$xmaxs, annotation.df.TE$xmaxs),
+                                           ys = c(annotation.df.TE$ymiddle, annotation.df.TE$ymins, annotation.df.TE$ymaxs))
+  }
+  
+  #Create dataframe with subfamily annotations
+  annotation.df.TE.subfam <- data.frame(xs = c(annotation.df.TE$xmaxs + 1),
+                               ys = c(annotation.df.TE$ymiddle),
+                               label = c(as.character(candidateTable$subfamTE)),
+                               stringsAsFactors = FALSE)
+  
+  #Create the annotation of the ORF
+  annotation.df$ymins <- -1*(ymaxValue)*(annotation.df$levelNum+1)
+  annotation.df$ymaxs <- -1*(ymaxValue)*(annotation.df$levelNum+1) + ymaxValue*ratioAnnotation
+  annotation.df$ymiddle <- (annotation.df$ymins + annotation.df$ymaxs)/2
+  
+  dfTranscript$ymins <- rep(0, numExons)
+  dfTranscript$ymaxs <- rep(ymaxValue, numExons)
+  dfTranscript$exonnum <- seq(1,numExons)
+  
+  dfTranscript$xmiddle <- (dfTranscript$xmins + dfTranscript$xmaxs)/2
+  dfTranscript$ymiddle <- (dfTranscript$ymins + dfTranscript$ymaxs)/2
+  
+  #The Text Labels for the tracks
+  xposLabel = -1*xmaxValue/9
+  labelTracks.df <- data.frame(xs = c(xposLabel,
+                                      xposLabel,
+                                      xposLabel),
+                               ys = seq(ymaxValue/2, -3*ymaxValue/2, -1*ymaxValue),
+                               label = c("Transcript",
+                                         "TE",
+                                         "ORF")
+                               )
+  #ORFseq
+  
+  seqAA <- currentFocusTable$orf.sequence[i]
+  numAA <- addLength/3
+  startPos <- annotation.df$xmins[1]
+  startVectemp <- seq(startPos,numAA*3+startPos-3,3)
+  annotation.df.ORF <- data.frame(xmins = startVectemp, xmaxs = startVectemp+3, xmiddle = startVectemp + 1,ymins = rep(ymaxValue+1, numAA), ymaxs = ymaxValue*1.5, ymiddle = ymaxValue*1.25, AA = unlist(strsplit(seqAA, split = "")))
+  
+  #This will hold the adjustment to the hline
+  adjustmentHline = 1
+  
+  gg_splice <- ggplot(data = dfTranscript, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs)) + 
+      geom_rect(aes(fill = labels), color = "black", alpha = .85) +
+      geom_text(aes(x=xmiddle, y=ymiddle, label = exonnum), color = "black") +
+    geom_rect(data = annotation.df.TE, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = currentColorTE, alpha = .95) +
+    geom_polygon(data = annotation.df.TE.segment, aes(x=xs, y=ys), inherit.aes = FALSE) +
+    geom_text(data=annotation.df.TE.subfam, aes(x=xs, y=ys, label = label, fontface = 3), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data = annotation.df, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "white", fill = "navyblue", alpha = .95) +
+    geom_segment(data = annotation.df, aes(x=xmins, xend=xmaxs, y=ymiddle, yend=ymiddle), color ="white", arrow = arrow(length = unit(0.5, "cm")),size = 1) +
+      scale_fill_manual(values = c(currentColorTE, "gray94"))+
+    labs(x = "Transcript Nucleotide") +
+    geom_hline(yintercept = range(0-adjustmentHline,-1*ymaxValue-adjustmentHline), color = "grey42", alpha = 0.85, linetype="dashed") +
+    geom_vline(xintercept = range(0), color = "black") +
+    geom_text(data=labelTracks.df, aes(x=xs, y=ys, label = label), inherit.aes = FALSE, hjust = 0) +
+    geom_rect(data =  annotation.df.ORF, aes(xmin=xmins, xmax=xmaxs, ymin=ymins, ymax=ymaxs), color = "black", fill = "white", alpha = .95) +
+    geom_text(data = annotation.df.ORF, aes(x= xmiddle, y= ymiddle, label = AA, fontface = 1.5), inherit.aes = FALSE, hjust = 0) +
+      theme_classic() + 
+    scale_x_continuous(expand = c(0,0)) +
+    theme(axis.line.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          axis.title.y=element_blank(),
+          legend.position = "none")
+  
+  ggsave(paste0("./LRplotsSeq/",currentFocusTable$TEid[i],"_", currentFocusTable$candidate.peptide[i],"_",currentTranscript, "_TranscriptFigure.pdf"), gg_splice, width = 450, height = 1.8, device = cairo_pdf, limitsize = FALSE)
+  
+  i = i + 1
+}
+```
 
 
 ```{r}
